@@ -45,3 +45,17 @@ describe Tablado::Presentation::Slide do
   end
 
 end
+
+describe Tablado::Presentation::Slide::Background do
+
+  let(:background) { Tablado::Presentation::Slide::Background.new }
+
+  it 'should have attribute image' do expect( background.respond_to? :image) end
+  it 'should have attribute slide' do expect( background.respond_to? :slide) end
+
+  describe '#image' do
+    it 'default value should be as Magick::Image' do expect(background.image.class).to eq(Magick::Image
+) end
+  end
+
+end
