@@ -78,7 +78,9 @@ module Tablado
 
     def initialize params={}
       params.each { |key, value| instance_variable_set("@#{key}", value) }
-      image = Magick::Image.new(slide.presentation.width, slide.presentation.height) { self.background_color = @color}
+      # TODO: Refactory this! Please!
+      $color = color
+      image = Magick::Image.new(slide.presentation.width, slide.presentation.height) { self.background_color = $color}
       image.display
     end
 
