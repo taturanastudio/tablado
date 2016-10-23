@@ -34,7 +34,7 @@ module Tablado
           file_name = "%06d-%06d.%s" % [s_index, index, 'jpg']
           puts file_name
           puts slide.background.color
-          slide.background.image.write file_name
+          slide.compose(index).write file_name
         end
       end
     end
@@ -45,7 +45,8 @@ module Tablado
 
     attr_accessor :duration,
                   :presentation,
-                  :background
+                  :background,
+                  :elements
 
     def presentation
       @presentation ||= Presentation.new
@@ -57,6 +58,20 @@ module Tablado
 
     def background
       @background ||= Presentation::Slide::Background.new
+    end
+
+    def elements
+      @elements ||= []
+    end
+
+    def compose(index = 0)
+      puts index
+      image = background.image
+      elements.each do |element|
+        puts 'elements'
+        image.composite!(element.draw, Magick::NorthWestGravity, element.left, element.top, Magick::CopyCompositeOp)
+      end
+      return image
     end
 
   end
@@ -92,6 +107,31 @@ module Tablado
       self.image = Magick::Image.new(slide.presentation.width, slide.presentation.height) { self.background_color = $color}
     end
 
+  end
+
+  class Presentation::Slide::Element
+
+    attr_accessor :width,
+                  :height,
+                  :top,
+                  :left,
+                  :draw
+    
+    def initialize params={}
+      params.each { |key, value| instance_variable_set("@#{key}", value) }
+    end
+
+    def draw
+      @draw ||= Magick::Image.new(100, 100)  { self.background_color = '#333'}
+    end
+
+    def image=(new_draw)
+      @draw = new_draw
+    end
+
+  end
+
+  class Presentation::Slide::Element::Image < Presentation::Slide::Element
   end
 
 end
