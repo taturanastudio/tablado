@@ -66,10 +66,11 @@ module Tablado
 
     def compose(index = 0)
       puts index
-      image = background.image
+      image = background.image.dup
       elements.each do |element|
         puts 'elements'
-        image.composite!(element.draw, Magick::NorthWestGravity, element.left, element.top, Magick::CopyCompositeOp)
+        animated = element.animate index
+        image.composite!(animated.draw, Magick::NorthWestGravity, animated.left, animated.top, Magick::CopyCompositeOp)
       end
       return image
     end
@@ -115,7 +116,8 @@ module Tablado
                   :height,
                   :top,
                   :left,
-                  :draw
+                  :draw,
+                  :animations
     
     def initialize params={}
       params.each { |key, value| instance_variable_set("@#{key}", value) }
@@ -129,9 +131,31 @@ module Tablado
       @draw = new_draw
     end
 
+    def animations
+      @animations ||= []
+    end
+
+    def animate(index = 0)
+      result = self
+      animations.each do |animation|
+        puts 'anims'
+        result = animation.process result, index
+      end
+      result
+    end
+
   end
 
   class Presentation::Slide::Element::Image < Presentation::Slide::Element
+  end
+
+  class Presentation::Animation
+    
+    def process(element , index = 0)
+      element.top += index
+      element
+    end
+
   end
 
 end

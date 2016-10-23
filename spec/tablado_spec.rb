@@ -63,7 +63,7 @@ describe Tablado::Presentation::Slide::Element do
 
   let(:element) { Tablado::Presentation::Slide::Element.new }
 
-  %w[width height top left].each do |a|
+  %w[width height top left animations].each do |a|
     it "should have attribute #{a}" do expect( element.respond_to? a.to_sym) end
   end
 
