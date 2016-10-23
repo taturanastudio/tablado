@@ -67,4 +67,22 @@ describe Tablado::Presentation::Slide::Element do
     it "should have attribute #{a}" do expect( element.respond_to? a.to_sym) end
   end
 
+  describe '#draw' do
+    it 'should return Magick::Image Class' do
+      expect(element.draw.class).to eq(Magick::Image)
+    end
+  end
+
+  describe '#animations' do
+    it 'should return an Array' do
+      expect(element.animations.class).to eq(Array)
+    end
+  end
+
+  describe '#animate' do
+    it 'should return an animated Element' do
+      expect(element.animate.class).to eq(Tablado::Presentation::Slide::Element)
+    end
+  end
+
 end
