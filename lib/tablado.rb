@@ -28,10 +28,13 @@ module Tablado
     end
 
     def build
-      slides.each do |slide|
-        frames = fps * slide.duration
+      slides.each_with_index do |slide, s_index|
+        frames = (fps * slide.duration) - 1
         (0..frames).each do |index|
-          puts index
+          file_name = "%06d-%06d.%s" % [s_index, index, 'jpg']
+          puts file_name
+          puts slide.background.color
+          slide.background.image.write file_name
         end
       end
     end
@@ -40,7 +43,9 @@ module Tablado
 
   class Presentation::Slide
 
-    attr_accessor :duration, :presentation
+    attr_accessor :duration,
+                  :presentation,
+                  :background
 
     def presentation
       @presentation ||= Presentation.new
@@ -48,6 +53,10 @@ module Tablado
 
     def duration
       @duration ||= 1
+    end
+
+    def background
+      @background ||= Presentation::Slide::Background.new
     end
 
   end
@@ -80,8 +89,7 @@ module Tablado
       params.each { |key, value| instance_variable_set("@#{key}", value) }
       # TODO: Refactory this! Please!
       $color = color
-      image = Magick::Image.new(slide.presentation.width, slide.presentation.height) { self.background_color = $color}
-      image.display
+      self.image = Magick::Image.new(slide.presentation.width, slide.presentation.height) { self.background_color = $color}
     end
 
   end
